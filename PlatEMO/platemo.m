@@ -58,6 +58,7 @@ function varargout = platemo(varargin)
 % Computational Intelligence Magazine, 2017, 12(4): 73-87".
 %--------------------------------------------------------------------------
 
+% Versão de Frederic Menezes
     cd(fileparts(mfilename('fullpath')));
     addpath(genpath(cd));
     if isempty(varargin)
