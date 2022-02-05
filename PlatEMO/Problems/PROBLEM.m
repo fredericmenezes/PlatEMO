@@ -116,6 +116,32 @@ classdef PROBLEM < handle & matlab.mixin.Heterogeneous
             end
             Population = SOLUTION(PopDec);
         end
+        function Population = InitializationChaos(obj,N)
+        %InitializationChaos - Generate initial solutions by chaostic map.
+        %
+        %   P = obj.InitializationChaos() randomly generates the decision
+        %   variables of obj.N solutions and returns the SOLUTION objects.
+        %
+        %   P = obj.InitializationChaos(N) generates N solutions.
+        %
+        %   Example:
+        %       Population = Problem.InitializationChaos()
+        
+            if nargin < 2
+            	N = obj.N;
+            end
+            switch obj.encoding
+                case 'binary'
+                    PopDec = randi([0,1],N,obj.D);
+                case 'permutation'
+                    [~,PopDec] = sort(rand(N,obj.D),2);
+                otherwise
+                    PopDec = initialchaos(7, N, obj.D, obj.upper, obj.lower);
+                    
+            end
+            Population = SOLUTION(PopDec);
+        end
+        
         function PopDec = CalDec(obj,PopDec)
         %CalDec - Repair invalid solutions.
         %
