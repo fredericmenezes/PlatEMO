@@ -23,9 +23,6 @@ classdef MOJS < ALGORITHM
             [ngrid,Nr] = Algorithm.ParameterSet(20,100);
             var_min    = Problem.lower(:);
             var_max    = Problem.upper(:);
-            MaxIt      = ceil((Problem.maxFE-Problem.N)/Problem.N);
-            if MaxIt<1; MaxIt=1; end
-            
             %% Generate random population
             %  Initialization by Eq. 25
             Population = Problem.InitializationChaos();
@@ -39,33 +36,23 @@ classdef MOJS < ALGORITHM
             ARCH.pos_fit = POS_fit(~DOMINATED,:);
             ARCH         = updateGrid(ARCH,ngrid);
             
-            it=1;
+            Archive      = Population(~DOMINATED);
+            %Archive      = Archive(NDSort(Archive.objs,1)==1);
+            
+            Archive.adds(ARCH);
+            %Archive      = SOLUTION(ARCH.pos,ARCH);
+            
+            MaxIt        = ceil((Problem.maxFE-Problem.N)/Problem.N);
+            if MaxIt<1; MaxIt=1; end
+            it =1;
             %% Optimization
             while Algorithm.NotTerminated(Archive)
                 POS = OperatorJS(POS,ELI_POS,ELI_POS_fit, ARCH,it,MaxIt);
                 POS = opposJumping(POS,var_min,var_max,it,MaxIt);
                 [ELI_POS, ELI_POS_fit] = evaluatePOS(POS,ELI_POS,ELI_POS_fit);
-                
-                
-                %% Update the archive 
-                if size(ARCH.pos,1)==1
-                    ARCH.pos= POS;
-                    ARCH.pos_fit= POS_fit;
-                    ARCH = updateArchive(ARCH,ELI_POS,ELI_POS_fit,ngrid);
-                else
-                    ARCH = updateArchive(ARCH,ELI_POS,ELI_POS_fit,ngrid);
-                    if size(ARCH.pos,1)==1
-                        ARCH.pos= ELI_POS;
-                        ARCH.pos_fit= ELI_POS_fit;
-                    end
-                end
-                if(size(ARCH.pos,1)>Nr)
-                    % Delete the worst members from archive by Eq. 18
-                    ARCH = deleteFromArchive(ARCH,size(ARCH.pos,1)-Nr,ngrid);
-                end
+                Archive = updateARCH(ARCH, POS, POS_fit, ELI_POS, ELI_POS_fit, ngrid, Nr);
                 
                 it=it+1;
-                
             end
         end
     end
