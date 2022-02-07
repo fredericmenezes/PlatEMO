@@ -1,4 +1,4 @@
-function [ELI_POS, ELI_POS_fit = evaluatePOS(POS, ELI_POS, ELI_POS_fit)
+function [ELI_POS, ELI_POS_fit] = evaluatePOS(POS, ELI_POS, ELI_POS_fit, Problem)
 % Evaluate the population
 %
 %------------------------------- Copyright --------------------------------
@@ -18,11 +18,12 @@ function [ELI_POS, ELI_POS_fit = evaluatePOS(POS, ELI_POS, ELI_POS_fit)
     best_pos = ~dominates(ELI_POS_fit, POS_fit);
     
     best_pos(rand(Np,1)>=0.5) = 0;
-    if(sum(pos_best)>1)
-    ELI_POS_fit(pos_best,:) = POS_fit(pos_best,:);
-    ELI_POS(pos_best,:) = POS(pos_best,:);
+    
+    if (sum(pos_best)>1)
+        ELI_POS_fit(pos_best,:) = POS_fit(pos_best,:);
+        ELI_POS(pos_best,:) = POS(pos_best,:);
     end
-    if(sum(best_pos)>1)
+    if (sum(best_pos)>1)
         ELI_POS_fit(best_pos,:) = POS_fit(best_pos,:);
         ELI_POS(best_pos,:) = POS(best_pos,:);
     end

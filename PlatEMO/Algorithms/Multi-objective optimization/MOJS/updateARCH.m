@@ -25,7 +25,7 @@ function Archive = updateARCH(ARCH, POS, POS_fit, ELI_POS, ELI_POS_fit, ngrid, N
         % Delete the worst members from archive by Eq. 18
         ARCH = deleteFromArchive(ARCH,size(ARCH.pos,1)-Nr,ngrid);
     end
-    Archive = SOLUTION(ARCH.pos,ARCH);
+    Archive = SOLUTION(ARCH.pos);
 end
 
 %% This function updates the archive given a new population 

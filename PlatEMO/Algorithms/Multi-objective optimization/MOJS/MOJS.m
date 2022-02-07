@@ -21,25 +21,29 @@ classdef MOJS < ALGORITHM
         function main(Algorithm,Problem)
             %% Parameter setting
             [ngrid,Nr] = Algorithm.ParameterSet(20,100);
-            var_min    = Problem.lower(:);
-            var_max    = Problem.upper(:);
+            var_min    = Problem.lower;
+            var_max    = Problem.upper;
             %% Generate random population
             %  Initialization by Eq. 25
             Population = Problem.InitializationChaos();
+            %Population = Problem.Initialization();
+            %Elite = Poputation;
             
             POS          = Population.decs;
             POS_fit      = Population.objs;
             ELI_POS      = POS;
             ELI_POS_fit  = POS_fit;
+            
             DOMINATED    = checkDomination(POS_fit);
-            ARCH.pos     = POS(~DOMINATED,:);
-            ARCH.pos_fit = POS_fit(~DOMINATED,:);
-            ARCH         = updateGrid(ARCH,ngrid);
             
             Archive      = Population(~DOMINATED);
             %Archive      = Archive(NDSort(Archive.objs,1)==1);
             
-            Archive.adds(ARCH);
+            ARCH.pos     = POS(~DOMINATED,:);
+            ARCH.pos_fit = POS_fit(~DOMINATED,:);
+            ARCH         = updateGrid(ARCH,ngrid);
+            
+            %Archive.adds(ARCH);
             %Archive      = SOLUTION(ARCH.pos,ARCH);
             
             MaxIt        = ceil((Problem.maxFE-Problem.N)/Problem.N);
@@ -49,7 +53,7 @@ classdef MOJS < ALGORITHM
             while Algorithm.NotTerminated(Archive)
                 POS = OperatorJS(POS,ELI_POS,ELI_POS_fit, ARCH,it,MaxIt);
                 POS = opposJumping(POS,var_min,var_max,it,MaxIt);
-                [ELI_POS, ELI_POS_fit] = evaluatePOS(POS,ELI_POS,ELI_POS_fit);
+                [ELI_POS, ELI_POS_fit] = evaluatePOS(POS,ELI_POS,ELI_POS_fit, Problem);
                 Archive = updateARCH(ARCH, POS, POS_fit, ELI_POS, ELI_POS_fit, ngrid, Nr);
                 
                 it=it+1;
