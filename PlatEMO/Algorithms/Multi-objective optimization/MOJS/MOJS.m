@@ -1,9 +1,10 @@
 %classdef MOJS < ALGORITHM
 % <multi> <real>
 % Multi-Objective Jellyfish Search
-% ngrid ---  20 ---  Number of grids in each dimension
-% Nr    --- 100 ---  Archive size
-% MaxIt --- 400 ---  Archive size
+% ngrid ---  20 ---  Numero de grades em cada dimensão
+% Nr    --- 100 ---  Tamanho do Arquivo
+% MaxIt ---  99 ---  Maximo de iteracoes. Se alterar maxFE faça MaxIt = (maxFE-N)/N
+
 
 %------------------------------- Reference --------------------------------
 % J. S. Chou, D. N. Truong, Multiobjective optimization inspired by 
@@ -20,37 +21,27 @@
 classdef MOJS < ALGORITHM
     methods
         function main(Algorithm,Problem)
-            
-            %g = @(x) 1 + 9*mean(x(:,2:end),2);
-            %h = @(x) 1 - (x(:,1)./g(x)).^0.5;
-            %fun = @(x) [x(:,1), g(x).*h(x)];
-            
-            
             % Parameters
             Np      = Problem.N;
-            %Nr      = params.Nr;
-            %MaxIt   = 400;
-            [ngrid,Nr, MaxIt] = Algorithm.ParameterSet(20,100,400);
-            %ngrid   = params.ngrid;
-            %fun     = MultiObj.fun;
+            [ngrid,Nr, MaxIt] = Algorithm.ParameterSet(20,100,99);
             nVar    = Problem.D;
             var_min = Problem.lower(:);
             var_max = Problem.upper(:);
             it=1;
             % Initialization by Eq. 25
             Population = Problem.InitializationChaos();
-            %POS=initialchaos(7,Np,nVar,var_max',var_min');
             POS          = Population.decs;
-            %POS_fit      = Problem.CalObj(POS);
             POS_fit      = Population.objs;
             ELI_POS      = POS;
             ELI_POS_fit  = POS_fit;
             DOMINATED    = checkDomination(POS_fit);
-            ARCH.pos     = POS(~DOMINATED,:);
-            ARCH.pos_fit = POS_fit(~DOMINATED,:);
-            ARCH         = updateGrid(ARCH,ngrid);
-            %Archive      = SOLUTION(ARCH.pos);
+            %ARCH.pos     = POS(~DOMINATED,:);
+            %ARCH.pos_fit = POS_fit(~DOMINATED,:);
+            %ARCH         = updateGrid(ARCH,ngrid);
             Archive      = Population(~DOMINATED);
+            ARCH.pos     = Archive.decs;
+            ARCH.pos_fit = Archive.objs;
+            ARCH         = updateGrid(ARCH,ngrid);
             
             %display(['Iteration #0 - Archive size: ' num2str(size(ARCH.pos,1))]);
             %% Main MOJS loop
