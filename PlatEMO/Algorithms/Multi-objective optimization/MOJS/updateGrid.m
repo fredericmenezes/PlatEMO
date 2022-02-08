@@ -1,15 +1,5 @@
+%% Function that updates the hypercube grid, the hypercube where belongs
 function ARCH = updateGrid(ARCH,ngrid)
-% Function that updates the hypercube grid, the hypercube where belongs
-
-%------------------------------- Copyright --------------------------------
-% Copyright (c) 2021 BIMK Group. You are free to use the PlatEMO for
-% research purposes. All publications which use this platform or any code
-% in the platform should acknowledge the use of "PlatEMO" and reference "Ye
-% Tian, Ran Cheng, Xingyi Zhang, and Yaochu Jin, PlatEMO: A MATLAB platform
-% for evolutionary multi-objective optimization [educational forum], IEEE
-% Computational Intelligence Magazine, 2017, 12(4): 73-87".
-%--------------------------------------------------------------------------
-
     % Computing the  hypercube limitation
     ndim = size(ARCH.pos_fit,2);
     ARCH.hypercube_limits = zeros(ngrid+1,ndim);
@@ -37,4 +27,3 @@ function ARCH = updateGrid(ARCH,ngrid)
         ARCH.quality(i,2) = 10/sum(ARCH.grid_idx==ids(i)); 
     end
 end
-
