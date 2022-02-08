@@ -3,6 +3,7 @@
 % Multi-Objective Jellyfish Search
 % ngrid ---  20 ---  Number of grids in each dimension
 % Nr    --- 100 ---  Archive size
+% MaxIt --- 400 ---  Archive size
 
 %------------------------------- Reference --------------------------------
 % J. S. Chou, D. N. Truong, Multiobjective optimization inspired by 
@@ -37,20 +38,27 @@ classdef MOJS < ALGORITHM
             var_max = Problem.upper(:);
             it=1;
             % Initialization by Eq. 25
-            POS=initialchaos(7,Np,nVar,var_max',var_min');
-            POS_fit      = Problem.CalObj(POS);
+            Population = Problem.InitializationChaos();
+            %POS=initialchaos(7,Np,nVar,var_max',var_min');
+            POS          = Population.decs;
+            %POS_fit      = Problem.CalObj(POS);
+            POS_fit      = Population.objs;
             ELI_POS      = POS;
             ELI_POS_fit  = POS_fit;
             DOMINATED    = checkDomination(POS_fit);
             ARCH.pos     = POS(~DOMINATED,:);
             ARCH.pos_fit = POS_fit(~DOMINATED,:);
             ARCH         = updateGrid(ARCH,ngrid);
-            Archive      = SOLUTION(ARCH.pos);
+            %Archive      = SOLUTION(ARCH.pos);
+            Archive      = Population(~DOMINATED);
             
-            display(['Iteration #0 - Archive size: ' num2str(size(ARCH.pos,1))]);
+            %display(['Iteration #0 - Archive size: ' num2str(size(ARCH.pos,1))]);
             %% Main MOJS loop
-            stopCondition = false;
-            while (~stopCondition || Algorithm.NotTerminated(Archive))
+            %stopCondition = false;
+            %while (Algorithm.NotTerminated(Archive) & ~stopCondition)
+            %while (Algorithm.NotTerminated(Archive) && ~stopCondition)
+            while Algorithm.NotTerminated(Archive) %&& ~stopCondition)
+            %while ~stopCondition
                 % Select leader by Eq. 16
                 h = selectLeader(ARCH);
                 % Calculate time control by Eq. 15
@@ -122,11 +130,13 @@ classdef MOJS < ALGORITHM
                     % Delete the worst members from archive by Eq. 18
                     ARCH = deleteFromArchive(ARCH,size(ARCH.pos,1)-Nr,ngrid);
                 end
-                display(['Iteration #' num2str(it) ' - Evaluations #' num2str(Problem.FE) ' - Archive size: ' num2str(size(ARCH.pos,1))]);
+                %display(['Iteration #' num2str(it) ' - Evaluations #' num2str(Problem.FE) ' - Archive size: ' num2str(size(ARCH.pos,1))]);
                 
                 Archive = SOLUTION(ARCH.pos);
                 it=it+1;
-                if(it>MaxIt), stopCondition = true; end
+                %if(it>MaxIt), stopCondition = true; end
+                %if(it>MaxIt), break; end
+                %if Algorithm.NotTerminated(Archive), break; end
             end
             %% Plotting paretofront
             
@@ -154,18 +164,18 @@ classdef MOJS < ALGORITHM
             
             %hold on
             
-            if(size(ARCH.pos_fit,2)==2)
-                plot(ARCH.pos_fit(:,1),ARCH.pos_fit(:,2),'or'); hold on;
-                grid on; xlabel('f1'); ylabel('f2'); %legend('PF verdadeiro','MOJS');
-            end
-            
-            if(size(ARCH.pos_fit,2)==3)
-                plot3(ARCH.pos_fit(:,1),ARCH.pos_fit(:,2),ARCH.pos_fit(:,3),'or'); hold on;
-                grid on; xlabel('f1'); ylabel('f2'); zlabel('f3');
-            end
+%             if(size(ARCH.pos_fit,2)==2)
+%                 plot(ARCH.pos_fit(:,1),ARCH.pos_fit(:,2),'or'); hold on;
+%                 grid on; xlabel('f1'); ylabel('f2'); %legend('PF verdadeiro','MOJS');
+%             end
+%             
+%             if(size(ARCH.pos_fit,2)==3)
+%                 plot3(ARCH.pos_fit(:,1),ARCH.pos_fit(:,2),ARCH.pos_fit(:,3),'or'); hold on;
+%                 grid on; xlabel('f1'); ylabel('f2'); zlabel('f3');
+%             end
             %set(gca, 'XLim', [0 4.5])
             %set(gca, 'YLim', [0 4.5])
-            disp('fred');
+            %disp('fred');
             
             
             

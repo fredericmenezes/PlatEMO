@@ -113,6 +113,7 @@ classdef ALGORITHM < handle & matlab.mixin.Heterogeneous
             obj.result(index,:) = {obj.pro.FE,Population};
             drawnow(); obj.outputFcn(obj,obj.pro);
             nofinish = obj.pro.FE < obj.pro.maxFE;
+
             assert(nofinish,'PlatEMO:Termination',''); tic;
         end
         function varargout = ParameterSet(obj,varargin)
