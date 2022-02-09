@@ -43,7 +43,9 @@ classdef MOJS < ALGORITHM
             ARCH         = updateGrid(ARCH,ngrid);
             
             %display(['Iteration #0 - Archive size: ' num2str(size(ARCH.pos,1))]);
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %% Main MOJS loop
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             while Algorithm.NotTerminated(Archive)
 
                 % Select leader by Eq. 16
