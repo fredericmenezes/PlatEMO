@@ -30,14 +30,13 @@ classdef MOJS < ALGORITHM
             it=1;
             % Initialization by Eq. 25
             Population = Problem.InitializationChaos();
+
             POS          = Population.decs;
             POS_fit      = Population.objs;
             ELI_POS      = POS;
             ELI_POS_fit  = POS_fit;
             DOMINATED    = checkDomination(POS_fit);
-            %ARCH.pos     = POS(~DOMINATED,:);
-            %ARCH.pos_fit = POS_fit(~DOMINATED,:);
-            %ARCH         = updateGrid(ARCH,ngrid);
+
             Archive      = Population(~DOMINATED);
             ARCH.pos     = Archive.decs;
             ARCH.pos_fit = Archive.objs;
@@ -45,11 +44,8 @@ classdef MOJS < ALGORITHM
             
             %display(['Iteration #0 - Archive size: ' num2str(size(ARCH.pos,1))]);
             %% Main MOJS loop
-            %stopCondition = false;
-            %while (Algorithm.NotTerminated(Archive) & ~stopCondition)
-            %while (Algorithm.NotTerminated(Archive) && ~stopCondition)
-            while Algorithm.NotTerminated(Archive) %&& ~stopCondition)
-            %while ~stopCondition
+            while Algorithm.NotTerminated(Archive)
+
                 % Select leader by Eq. 16
                 h = selectLeader(ARCH);
                 % Calculate time control by Eq. 15
@@ -82,7 +78,9 @@ classdef MOJS < ALGORITHM
                         end
                     end
                 end
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %% Update new position by opposition-based jumping using Eq. 26
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 if rand <(it/MaxIt)
                     [POS] = OPPOS(POS,var_max,var_min);
                 end
@@ -92,7 +90,9 @@ classdef MOJS < ALGORITHM
                 else
                     POS = checkBoundaries(POS,var_max,var_min);
                 end
-                %% Evaluate the population
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                %% Evaluate the population and update the archive
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 POS_fit = Problem.CalObj(POS);
                 pos_best = dominates(POS_fit, ELI_POS_fit);
                 best_pos = ~dominates(ELI_POS_fit, POS_fit);
@@ -105,7 +105,9 @@ classdef MOJS < ALGORITHM
                     ELI_POS_fit(best_pos,:) = POS_fit(best_pos,:);
                     ELI_POS(best_pos,:) = POS(best_pos,:);
                 end
+                
                 %% Update the archive
+                
                 if size(ARCH.pos,1)==1
                     ARCH.pos= POS;
                     ARCH.pos_fit= POS_fit;
@@ -125,51 +127,10 @@ classdef MOJS < ALGORITHM
                 
                 Archive = SOLUTION(ARCH.pos);
                 it=it+1;
-                %if(it>MaxIt), stopCondition = true; end
-                %if(it>MaxIt), break; end
-                %if Algorithm.NotTerminated(Archive), break; end
+
             end
-            %% Plotting paretofront
-            
-            %figure
-            
-            %ObjectiveFunction=fun;
-            %x=MultiObj.var_min(1):0.01:MultiObj.var_max(1);
-            
-            %for i=1:size(x,2)
-            %    TPF(i,:)=ObjectiveFunction(x(i));
-            %end
-            
-            %line(TPF(:,1),TPF(:,2));
-            %title('Schaffer')
-            
-            %xlabel('f1')
-            %ylabel('f2')
-            
-            %box on
-            
-            %fig=gcf;
-            
-            %set(findall(fig,'-property','FontName'),'FontName','Garamond')
-            %set(findall(fig,'-property','FontAngle'),'FontAngle','italic')
-            
-            %hold on
-            
-%             if(size(ARCH.pos_fit,2)==2)
-%                 plot(ARCH.pos_fit(:,1),ARCH.pos_fit(:,2),'or'); hold on;
-%                 grid on; xlabel('f1'); ylabel('f2'); %legend('PF verdadeiro','MOJS');
-%             end
-%             
-%             if(size(ARCH.pos_fit,2)==3)
-%                 plot3(ARCH.pos_fit(:,1),ARCH.pos_fit(:,2),ARCH.pos_fit(:,3),'or'); hold on;
-%                 grid on; xlabel('f1'); ylabel('f2'); zlabel('f3');
-%             end
-            %set(gca, 'XLim', [0 4.5])
-            %set(gca, 'YLim', [0 4.5])
-            %disp('fred');
-            
-            
-            
+
+           
         end
     end
 end
