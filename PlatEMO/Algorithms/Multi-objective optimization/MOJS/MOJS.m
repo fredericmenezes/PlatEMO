@@ -128,8 +128,11 @@ classdef MOJS < ALGORITHM
                 %display(['Iteration #' num2str(it) ' - Evaluations #' num2str(Problem.FE) ' - Archive size: ' num2str(size(ARCH.pos,1))]);
                 
                 Archive = SOLUTION(ARCH.pos);
-                it=it+1;
 
+                it=it+1;
+                if it>MaxIt
+                    it = MaxIt-50;
+                end
             end
 
            
